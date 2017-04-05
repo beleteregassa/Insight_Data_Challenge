@@ -1,11 +1,8 @@
-# Insight_Data_Challenge
-
 # Table of Contents
 1. [Challenge Summary](README.md#challenge-summary)
 2. [Details of Implementation](README.md#details-of-implementation)
 3. [Download Data](README.md#download-data)
 4. [Description of Data](README.md#description-of-data)
-5. [Description of code](README.md#description-of-code)
 
 # Challenge Summary
 
@@ -16,14 +13,22 @@ The desired features are described below:
 ### Feature 1: 
 List the top 10 most active host/IP addresses that have accessed the site.
 
+We first load the file and convert it to data frame. For later use, we also add a parsed timestamp feature to the data frame. This task is accomplished by the method load_file(stop = 10000) in the process_log.py script. The 'stop' can be set to the number of rows we want to read.
+Once we create the data frame,  we use the method top_hosts(logs), to list the top 10 most active hours that have accessed.
+
 ### Feature 2: 
-Identify the 10 resources that consume the most bandwidth on the site
+Identify the 10 resources that consume the most bandwidth on the site.
+This feature can be achieved by grouping 'request' by the sum of the 'reply_bytes' and sorting in descending order. The method top_resources(logs) does the job.
 
 ### Feature 3:
 List the top 10 busiest (or most frequently visited) 60-minute periods 
 
+Once we sort the data frame by the time step, we can walk through the rows till the time interval is 3600 seconds, at which we log the timestamp at index = 0, and the total conunts of the events in the 60-minute period. We then reset the count, and update the index. We have to loop through all possible combinations of the length of the data frame to find the most busiest hours. This is handled by the method busy_hours(logs). 
+
 ### Feature 4: 
 Detect patterns of three failed login attempts from the same IP address over 20 seconds so that all further attempts to the site can be blocked for 5 minutes. Log those possible security breaches.
+
+Like the previous feature, we trace through sorted timestamps until we find the desired patterns and log into the file using method blocked_list(logs).
 
 
 ### Other considerations and optional features
@@ -136,40 +141,4 @@ e.g., `log.txt`
     ...
     
 In the above example, the third line shows a failed login (HTTP reply code of 401) followed by a successful login (HTTP reply code of 200) two seconds later from the same IP address.
-
-
-## Repo directory structure
-
-The directory structure for your repo should look like this:
-
-    ├── README.md 
-    ├── run.sh
-    ├── src
-    │   └── process_log.py
-    ├── log_input
-    │   └── log.txt
-    ├── log_output
-    |   └── hosts.txt
-    |   └── hours.txt
-    |   └── resources.txt
-    |   └── blocked.txt
-    ├── insight_testsuite
-        └── run_tests.sh
-        └── tests
-            └── test_features
-            |   ├── log_input
-            |   │   └── log.txt
-            |   |__ log_output
-            |   │   └── hosts.txt
-            |   │   └── hours.txt
-            |   │   └── resources.txt
-            |   │   └── blocked.txt
-            ├── your-own-test
-                ├── log_input
-                │   └── your-own-log.txt
-                |__ log_output
-                    └── hosts.txt
-                    └── hours.txt
-                    └── resources.txt
-                    └── blocked.txt
 
